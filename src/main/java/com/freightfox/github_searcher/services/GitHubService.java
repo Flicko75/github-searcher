@@ -3,8 +3,8 @@ package com.freightfox.github_searcher.services;
 import com.freightfox.github_searcher.client.GitHubClient;
 import com.freightfox.github_searcher.dto.GitHubApiRepository;
 import com.freightfox.github_searcher.dto.GitHubApiResponse;
-import com.freightfox.github_searcher.entities.GithubRepository;
-import com.freightfox.github_searcher.repository.GithubRepositoryRepo;
+import com.freightfox.github_searcher.entities.GitHubRepository;
+import com.freightfox.github_searcher.repository.GitHubRepositoryRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,30 +17,30 @@ public class GitHubService {
 
     private final GitHubClient client;
 
-    private final GithubRepositoryRepo repository;
+    private final GitHubRepositoryRepo repository;
 
-    public List<GithubRepository> searchRepository(
-            String entity,
+    public List<GitHubRepository> searchRepository(
+            String query,
             String language,
             String sort
     ) {
         GitHubApiResponse response =
-                client.searchRepository(entity, language, sort);
+                client.searchRepository(query, language, sort);
 
         List<GitHubApiRepository> repositories = response.items();
-        List<GithubRepository> entities = new ArrayList<>();
+        List<GitHubRepository> entities = new ArrayList<>();
 
         repositories.forEach(repository -> {
             entities.add(toEntity(repository));
         });
 
-        List<GithubRepository> savedRepositories = repository.saveAll(entities);
+        List<GitHubRepository> savedRepositories = repository.saveAll(entities);
 
         return savedRepositories;
     }
 
-    private GithubRepository toEntity(GitHubApiRepository dto) {
-        return new GithubRepository(
+    private GitHubRepository toEntity(GitHubApiRepository dto) {
+        return new GitHubRepository(
                 dto.id(),
                 dto.name(),
                 dto.description(),

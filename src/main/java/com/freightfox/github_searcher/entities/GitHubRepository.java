@@ -16,7 +16,7 @@ import java.time.OffsetDateTime;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class GithubRepository {
+public class GitHubRepository {
 
     @Id
     private Long id;
