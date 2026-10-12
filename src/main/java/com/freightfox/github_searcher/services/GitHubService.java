@@ -6,10 +6,12 @@ import com.freightfox.github_searcher.dto.GitHubApiResponse;
 import com.freightfox.github_searcher.entities.GitHubRepository;
 import com.freightfox.github_searcher.repository.GitHubRepositoryRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +39,41 @@ public class GitHubService {
         List<GitHubRepository> savedRepositories = repository.saveAll(entities);
 
         return savedRepositories;
+    }
+
+    public List<GitHubRepository> fetchRepository(
+            String language,
+            Integer minStars,
+            String sort
+    ) {
+        if (sort == null || sort.isBlank()) {
+            sort = "stars";
+        } else {
+            sort = sort.toLowerCase(Locale.ROOT);
+        }
+
+        String sortField = switch (sort) {
+            case "stars" -> "stars";
+            case "forks" -> "forks";
+            case "updated" -> "lastUpdated";
+            default -> throw new IllegalArgumentException("Invalid sort option: " + sort);
+        };
+
+        Sort ordering = Sort.by(Sort.Direction.DESC, sortField);
+
+        if (language != null && !language.isBlank() && minStars != null) {
+            return repository.findByLanguageIgnoreCaseAndStarsGreaterThanEqual(language, minStars, ordering);
+        }
+
+        if (language != null && !language.isBlank()) {
+            return repository.findByLanguageIgnoreCase(language, ordering);
+        }
+
+        if (minStars != null) {
+            return repository.findByStarsGreaterThanEqual(minStars, ordering);
+        }
+
+        return repository.findAll(ordering);
     }
 
     private GitHubRepository toEntity(GitHubApiRepository dto) {
