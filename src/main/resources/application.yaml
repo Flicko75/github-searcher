@@ -12,3 +12,6 @@ spring:
       ddl-auto: update
     show-sql: true
 
+github:
+  api:
+    base-url: https://api.github.com
