@@ -1,6 +1,7 @@
 package com.freightfox.github_searcher.controllers;
 
 import com.freightfox.github_searcher.dto.GitHubSearchRequest;
+import com.freightfox.github_searcher.dto.GitHubSearchResponse;
 import com.freightfox.github_searcher.entities.GitHubRepository;
 import com.freightfox.github_searcher.services.GitHubService;
 import lombok.RequiredArgsConstructor;
@@ -19,13 +20,18 @@ public class GitHubController {
     private final GitHubService service;
 
     @PostMapping("/search")
-    public List<GitHubRepository> searchRepository(
-            @RequestBody GitHubSearchRequest request
-            ) {
-        return service.searchRepository(
+    public GitHubSearchResponse searchRepository(
+            @RequestBody GitHubSearchRequest request)
+    {
+        List<GitHubRepository> repositories = service.searchRepository(
                 request.query(),
                 request.language(),
                 request.sort()
+        );
+
+        return new GitHubSearchResponse(
+                "Repositories fetched and saved successfully",
+                repositories
         );
     }
 
