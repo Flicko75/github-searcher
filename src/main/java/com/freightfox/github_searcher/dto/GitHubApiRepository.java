@@ -1,5 +1,7 @@
 package com.freightfox.github_searcher.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.OffsetDateTime;
 
 public record GitHubApiRepository(
@@ -8,7 +10,7 @@ public record GitHubApiRepository(
         String description,
         GitHubOwner owner,
         String language,
-        Integer stargazers_count,
-        Integer forks_count,
-        OffsetDateTime updated_at
+        @JsonProperty("stargazers_count") Integer stargazersCount,
+        @JsonProperty("forks_count") Integer forksCount,
+        @JsonProperty("updated_at") OffsetDateTime updatedAt
 ) {}
