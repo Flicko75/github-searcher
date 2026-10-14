@@ -2,6 +2,12 @@
 
 A Spring Boot REST API that searches GitHub repositories, saves their details to PostgreSQL, and lets clients retrieve, filter, and sort the saved data.
 
+Live API: https://github-searcher-fu06.onrender.com
+
+Swagger UI: https://github-searcher-fu06.onrender.com/swagger-ui.html
+
+###### The application is deployed on Render and uses Neon PostgreSQL for persistent storage. The free Render instance may sleep after inactivity, so the first request after a period of inactivity can take longer to respond.
+
 ## Features
 
 - Search repositories by keyword and optional programming language.
@@ -11,6 +17,7 @@ A Spring Boot REST API that searches GitHub repositories, saves their details to
 - Sort results by stars, forks, or last-updated time.
 - Validate requests and return structured error responses.
 - Handle GitHub API failures, rate limits, and connection errors.
+- Provide interactive API documentation through Swagger UI.
 
 ## Tech Stack
 
@@ -21,8 +28,11 @@ A Spring Boot REST API that searches GitHub repositories, saves their details to
 - PostgreSQL
 - GitHub REST API
 - Maven
-- JUnit, Mockito, and Spring Boot Test
-- Testcontainers
+- Docker
+- Render
+- Neon PostgreSQL
+- JUnit, Mockito, Spring Boot Test and Testcontainers
+- Springdoc OpenAPI
 
 ## Prerequisites
 
@@ -45,11 +55,11 @@ Set the following environment variables before running the application.
 Create a PostgreSQL database named `github_searcher`. The GitHub API base URL is configured as `https://api.github.com`.
 
 
-## Running the Application
+## Running Locally
 
-Start PostgreSQL and configure the environment variables above. Then run the application from the project root.
+Start PostgreSQL and configure the environment variables. Then run the application from the project root.
 
-**Windows CMD**
+**Windows Command Prompt**
 
 ```cmd
 mvnw.cmd spring-boot:run
@@ -62,6 +72,32 @@ mvnw.cmd spring-boot:run
 ```
 
 The API runs at `http://localhost:8080` by default.
+
+Swagger UI is available at `http://localhost:8080/swagger-ui.html`.
+
+## Running with Docker
+
+Build the Docker image from the project root:
+
+```bash
+docker build -t github-searcher .
+```
+
+Run the container using the environment variables in your local `.env` file:
+
+```bash
+docker run -d --name github-searcher-api -p 8080:8080 --env-file .env github-searcher
+```
+
+The `.env` file must define `DB_URL`, `DB_USERNAME`, and `DB_PASSWORD`. Ensure the database URL uses the JDBC format expected by the application.
+
+The application is then available at `http://localhost:8080`.
+
+To inspect container logs:
+
+```bash
+docker logs github-searcher-api
+```
 
 ## API Reference
 
